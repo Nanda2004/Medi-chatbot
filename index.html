@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical Image Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+
+<body class="min-h-screen bg-[#f7fcff]">
+  <div class="gradient-bg"></div>
+  <div class="relative z-10 flex min-h-screen items-center justify-center px-4 py-10">
+    <div class="w-full max-w-6xl rounded-[32px] bg-white/70 p-8 shadow-xl backdrop-blur-2xl">
+      <div class="text-center space-y-4 mb-12 fade-in">
+        <div class="inline-flex items-center gap-3 rounded-full bg-white/90 px-5 py-2 text-sm font-semibold text-sky-600 shadow-inner">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M12 6v6h4.5" />
+          </svg>
+          Clinician-grade AI assistant
+        </div>
+        <h1 class="text-4xl md:text-5xl font-semibold text-slate-900">Medical Image Analyzer</h1>
+        <p class="mx-auto max-w-2xl text-base md:text-lg text-slate-600">
+          Upload an X-ray or injury photo to generate a structured, clinician-ready report with hedged interpretations and built-in safety guardrails.
+        </p>
+      </div>
+
+      <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <section class="rounded-[28px] border border-white/60 bg-white/85 p-8 shadow-inner upload-panel">
+          <form id="analyzerForm" class="space-y-6">
+            <label id="dropZone" for="medicalImage"
+              class="group relative flex h-64 cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-white/80 text-center transition duration-500 ease-out">
+              <input id="medicalImage" type="file" accept="image/*" class="hidden" />
+              <div id="previewWrapper" class="hidden absolute inset-0 overflow-hidden rounded-2xl">
+                <img id="imagePreview" src="" alt="Preview" class="h-full w-full object-cover" />
+                <button type="button" id="changeImageBtn"
+                  class="absolute right-4 top-4 rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-slate-600 shadow-lg">Change Image</button>
+              </div>
+              <div id="placeholderContent" class="flex flex-col items-center gap-4 px-8">
+                <div class="rounded-full bg-white/90 p-5 shadow-lg transition group-hover:shadow-2xl">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-500" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M3 15a4 4 0 014-4h1m6 0h1a4 4 0 014 4v2a4 4 0 01-4 4H7a4 4 0 01-4-4v-2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M16 7l-4-4m0 0L8 7m4-4v12" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-lg font-semibold text-slate-900">Drag & drop your medical image</p>
+                  <p class="text-sm text-slate-500">JPEG, PNG, DICOM exports · Max 15MB</p>
+                </div>
+                <span class="rounded-full border border-dashed border-slate-200 px-4 py-1 text-sm text-slate-500">
+                  or click to browse
+                </span>
+              </div>
+            </label>
+
+            <div id="errorBanner" class="hidden rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"></div>
+
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-2 text-sm text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M12 6v6h4.5" />
+                </svg>
+                Secure processing with audit trail
+              </div>
+              <button id="analyzeBtn" type="submit"
+                class="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-sky-500 to-teal-400 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:shadow-2xl">
+                <span class="loader hidden h-5 w-5 border-2 border-white/60 border-t-white rounded-full animate-spin"></span>
+                <span class="btn-text">Analyze Image</span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="rounded-[28px] border border-white/60 bg-white/85 p-6 shadow-inner space-y-6">
+          <div class="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-500" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Clinical Dialogue</p>
+          </div>
+          <div id="chatStream" class="space-y-4 max-h-[320px] overflow-y-auto pr-1"></div>
+          <div id="chatError" class="hidden rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"></div>
+          <form id="chatForm" class="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-white/90 p-4 shadow-inner">
+            <label for="chatInput" class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+              Ask follow-up questions
+            </label>
+            <textarea id="chatInput" rows="2" placeholder="Describe pain, ask for clarifications..."
+              class="w-full rounded-2xl border border-slate-200 bg-white/70 p-3 text-sm text-slate-700 outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-200"></textarea>
+            <button id="chatSendBtn" type="submit"
+              class="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60">
+              <span class="chat-btn-text">Send</span>
+              <span class="chat-loader hidden h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></span>
+            </button>
+          </form>
+
+          <div id="reportCard" class="hidden rounded-3xl border border-slate-100 bg-slate-50 p-6 shadow-xl">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Structured Report</p>
+                <h3 class="text-xl font-semibold text-slate-900">AI-Assisted Review</h3>
+              </div>
+              <span id="urgencyBadge" class="rounded-full px-4 py-1 text-sm font-medium"></span>
+            </div>
+            <div class="report-section" data-section="findings"></div>
+            <div class="report-section" data-section="impression"></div>
+            <div class="report-section" data-section="differential_diagnoses"></div>
+            <div class="report-section" data-section="recommendations"></div>
+            <div class="report-section" data-section="disclaimer"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="mt-10 flex flex-col md:flex-row items-center justify-between gap-3 rounded-2xl border border-white/60 bg-white/80 px-6 py-4 text-xs text-slate-500">
+        <span>Images stay on-device until you tap analyze.</span>
+        <span class="flex items-center gap-2">
+          <span class="sparkle-icon">
+            <span></span><span></span>
+          </span>
+          Enhanced by compliant AI safeguards
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+
+</html>
+
+
